@@ -6,12 +6,14 @@ import requests
 
 
 def get_current_year():
+    """Get the current year"""
     return datetime.now().year
 
 
-def get_data(year):
+def get_data():
     """Get a list of all the universities and their information"""
-
+    
+    year = get_current_year()
     base = "https://www.timeshighereducation.com/"
     url = f"{base}world-university-rankings/{year}/world-ranking#"
     res = requests.get(url)
@@ -22,16 +24,19 @@ def get_data(year):
         ).group()
         url = f"{base}sites/default/files/the_data_rankings/{part_url}"
         return requests.get(url).json()["data"]
+    else:
+        return None
 
 
-def write_to_csv(universities):
+def write_to_csv():
     """Write the data into a csv file in the current directory"""
 
-    with open("university_rankings.csv", "w") as f:
-        w = writer(f)
+    universities = get_data()
+    with open("university_rankings.csv", "w") as csv_file:
+        csv_writer = writer(csv_file)
 
         # Preparing the csv file header
-        w.writerow(
+        csv_writer.writerow(
             [
                 "rank",
                 "name",
@@ -45,7 +50,7 @@ def write_to_csv(universities):
 
         # Writing information for each university
         for univ in universities:
-            w.writerow(
+            csv_writer.writerow(
                 [
                     univ["rank"],
                     univ["name"],
@@ -59,6 +64,4 @@ def write_to_csv(universities):
 
 
 if __name__ == "__main__":
-    year = get_current_year()
-    data = get_data(year)
-    write_to_csv(data)
+    write_to_csv()
