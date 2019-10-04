@@ -12,7 +12,7 @@ def get_current_year():
 
 def get_data():
     """Get a list of all the universities and their information"""
-    
+
     year = get_current_year()
     base = "https://www.timeshighereducation.com/"
     url = f"{base}world-university-rankings/{year}/world-ranking#"
