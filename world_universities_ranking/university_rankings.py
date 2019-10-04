@@ -12,15 +12,15 @@ def get_current_year():
 def get_data(year):
     """Get a list of all the universities and their information"""
 
-    response = requests.get(
-        f"https://www.timeshighereducation.com/world-university-rankings/{year}/world-ranking#!/length/-1/sort_by/rank/sort_order/asc/cols/stats"
-    )
+    base = "https://www.timeshighereducation.com/"
+    url = f"{base}world-university-rankings/{year}/world-ranking#"
+    res = requests.get(url)
 
-    if response.ok:
+    if res.ok:
         part_url = re.search(
-            f"world_university_rankings_{year}.*?\\.json", response.text
+            f"world_university_rankings_{year}.*?\\.json", res.text,
         ).group()
-        url = f"https://www.timeshighereducation.com/sites/default/files/the_data_rankings/{part_url}"
+        url = f"{base}sites/default/files/the_data_rankings/{part_url}"
         return requests.get(url).json()["data"]
 
 
@@ -40,7 +40,7 @@ def write_to_csv(universities):
                 "num_students_per_staff",
                 "international_students",
                 "female_male_ratio",
-            ]
+            ],
         )
 
         # Writing information for each university
@@ -54,7 +54,7 @@ def write_to_csv(universities):
                     univ["stats_student_staff_ratio"],
                     univ["stats_pc_intl_students"],
                     univ["stats_female_male_ratio"],
-                ]
+                ],
             )
 
 
